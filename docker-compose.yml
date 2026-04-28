@@ -1,0 +1,32 @@
+services:
+  api-service:
+    build: ./api-service
+    container_name: mobile-morpher-api
+    ports:
+      - "9000:8000"
+    volumes:
+      - ./shared-volume:/app/shared-volume
+      - ./api-service:/app
+    environment:
+      - PYTHONUNBUFFERED=1
+      - WORK_DIR=/app/shared-volume
+    restart: unless-stopped
+    networks:
+      - mobile-morpher-network
+
+  web-ui:
+    build: ./web-ui
+    container_name: mobile-morpher-web
+    ports:
+      - "9001:3000"
+    depends_on:
+      - api-service
+    environment:
+      - NEXT_PUBLIC_API_URL=http://localhost:8000
+    restart: unless-stopped
+    networks:
+      - mobile-morpher-network
+
+networks:
+  mobile-morpher-network:
+    driver: bridge

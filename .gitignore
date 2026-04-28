@@ -1,0 +1,24 @@
+# Python
+__pycache__/
+*.py[cod]
+venv/
+.env
+
+# Node
+node_modules/
+.next/
+build/
+
+# Docker
+.dockerignore
+
+# Project
+shared-volume/
+*.apk
+*.apk.*
+keystore.jks
+
+# IDE
+.vscode/
+.idea/
+*.swp
