@@ -2,7 +2,7 @@ import os
 import re
 import shutil
 from pathlib import Path
-from typing import Dict, List, Optional
+from typing import Dict
 import xml.etree.ElementTree as ET
 
 class AppRefactor:

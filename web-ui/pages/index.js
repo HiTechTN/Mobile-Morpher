@@ -8,10 +8,14 @@ export default function Home() {
   const [packageId, setPackageId] = useState('')
   const [loading, setLoading] = useState(false)
   const [result, setResult] = useState(null)
+  const [error, setError] = useState('')
+
+  const API_BASE = '/api'
 
   const handleUpload = async () => {
+    setError('')
     if (!file || !appName || !packageId) {
-      alert('Veuillez remplir tous les champs')
+      setError('Veuillez remplir tous les champs')
       return
     }
 
@@ -20,18 +24,19 @@ export default function Home() {
     formData.append('file', file)
 
     try {
-      const uploadRes = await axios.post('http://localhost:8000/api/upload', formData)
+      const uploadRes = await axios.post(`${API_BASE}/upload`, formData)
       const sessionId = uploadRes.data.session_id
 
-      const processRes = await axios.post(`http://localhost:8000/api/process/${sessionId}`, {
+      const processRes = await axios.post(`${API_BASE}/process/${sessionId}`, {
         new_app_name: appName,
         new_package_id: packageId,
         mode: mode
       })
 
-      setResult(processRes.data)
-    } catch (error) {
-      alert('Erreur: ' + error.message)
+      setResult({ ...processRes.data, sessionId: sessionId })
+    } catch (err) {
+      console.error(err)
+      setError(`Erreur: ${err.message}`)
     } finally {
       setLoading(false)
     }
@@ -86,10 +91,16 @@ export default function Home() {
             {loading ? 'Traitement...' : 'Transformer l\'APK'}
           </button>
 
+          {error && (
+            <div className="mt-4 p-4 bg-red-600/20 rounded text-red-200">
+              {error}
+            </div>
+          )}
+
           {result && (
             <div className="mt-4 p-4 bg-green-600/20 rounded">
               <p>✓ Transformation réussie!</p>
-              <a href={`http://localhost:8000/api/download/${result.session_id}`} 
+              <a href={`${API_BASE}/download/${result.sessionId}`} 
                  className="text-blue-300 underline">Télécharger l'APK</a>
             </div>
           )}
