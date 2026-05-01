@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp"
+    android:background="#0f172a">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="🧬 Mobile-Morpher"
+        android:textSize="24sp"
+        android:textColor="#6366f1"
+        android:gravity="center"
+        android:layout_marginBottom="8dp"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Transformez vos APK Android"
+        android:textColor="#94a3b8"
+        android:gravity="center"
+        android:layout_marginBottom="24dp"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Mode"
+        android:textColor="#fff"/>
+
+    <Spinner
+        android:id="@+id/modeSpinner"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:layout_marginBottom="16dp"
+        android:background="#1e293b"/>
+
+    <Button
+        android:id="@+id/fileButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="📁 Sélectionner un APK"
+        android:layout_marginBottom="16dp"/>
+
+    <EditText
+        android:id="@+id/appNameEdit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Nom de l'application"
+        android:textColorHint="#64748b"
+        android:textColor="#fff"
+        android:background="#1e293b"
+        android:padding="12dp"
+        android:layout_marginBottom="8dp"/>
+
+    <EditText
+        android:id="@+id/packageIdEdit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Package ID (ex: com.monapp.pro)"
+        android:textColorHint="#64748b"
+        android:textColor="#fff"
+        android:background="#1e293b"
+        android:padding="12dp"
+        android:layout_marginBottom="16dp"/>
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        style="@android:style/Widget.ProgressBar.Horizontal"/>
+
+    <Button
+        android:id="@+id/transformButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Transformer l'APK"
+        android:backgroundTint="#6366f1"
+        android:textColor="#fff"
+        android:layout_marginTop="16dp"/>
+
+    <TextView
+        android:id="@+id/statusText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="#94a3b8"
+        android:gravity="center"
+        android:layout_marginTop="24dp"/>
+
+</LinearLayout>
