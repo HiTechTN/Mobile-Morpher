@@ -25,20 +25,19 @@ jobs:
       - name: Set up Android SDK
         uses: android-actions/setup-android@v2
       
-      - name: Create project structure
-        working-directory: android-app
+      - name: Install Gradle
         run: |
-          # Create minimal settings.gradle
-          echo 'rootProject.name = "MobileMorpher"' > settings.gradle
-          # Download Gradle wrapper
-          mkdir -p gradle/wrapper
-          curl -sL https://services.gradle.org/distributions/gradle-8.2-bin.zip -o /tmp/gradle.zip
-          unzip -q /tmp/gradle.zip -d /tmp
-          /tmp/gradle-8.2/bin/gradle -p android-app wrapper --gradle-version 8.2
-
+          sdk install gradle 8.4 || (
+            curl -sL https://services.gradle.org/distributions/gradle-8.4-bin.zip -o /tmp/gradle.zip
+            unzip -q /tmp/gradle.zip -d /opt/
+            echo "/opt/gradle-8.4/bin" >> $GITHUB_PATH
+          )
+      
       - name: Build APK
         working-directory: android-app
-        run: ./gradlew assembleDebug --no-daemon
+        run: |
+          gradle --version
+          gradle assembleDebug --no-daemon
       
       - name: Upload APK
         uses: actions/upload-artifact@v4
@@ -50,8 +49,8 @@ jobs:
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         uses: softprops/action-gh-release@v1
         with:
-          tag_name: android-app
-          release_name: Mobile-Morpher Android App
+          tag_name: android-v1.0.1
+          release_name: Mobile-Morpher Android App v1.0.1
           files: android-app/app/build/outputs/apk/debug/app-debug.apk
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
