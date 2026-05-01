@@ -25,6 +25,12 @@ jobs:
       - name: Set up Android SDK
         uses: android-actions/setup-android@v2
       
+      - name: Setup Gradle Wrapper
+        working-directory: android-app
+        run: |
+          touch settings.gradle
+          gradle wrapper --gradle-version 8.4
+
       - name: Build APK
         working-directory: android-app
         run: |
