@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#0f172a">
+    <meta name="description" content="Mobile-Morpher - Transformez vos APK Android">
+    <title>Mobile-Morpher</title>
+    <link rel="manifest" href="manifest.json">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #0f172a 100%);
+            min-height: 100vh;
+            color: #f8fafc;
+            padding: 1rem;
+        }
+        .container { max-width: 500px; margin: 0 auto; }
+        h1 {
+            text-align: center;
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(90deg, #6366f1, #ec4899);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .subtitle { text-align: center; color: #94a3b8; margin-bottom: 1.5rem; }
+        .card {
+            background: rgba(30, 41, 59, 0.8);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 1rem;
+            padding: 1.25rem;
+            margin-bottom: 1rem;
+        }
+        label { display: block; margin-bottom: 0.5rem; font-weight: 500; font-size: 0.9rem; }
+        input, select {
+            width: 100%;
+            padding: 0.75rem;
+            border-radius: 0.5rem;
+            border: 1px solid #475569;
+            background: #1e293b;
+            color: white;
+            margin-bottom: 1rem;
+            font-size: 1rem;
+        }
+        .modes { display: flex; gap: 0.5rem; margin-bottom: 1rem; }
+        .mode-btn {
+            flex: 1;
+            padding: 0.6rem 0.25rem;
+            border-radius: 0.5rem;
+            border: 2px solid #475569;
+            background: transparent;
+            color: #94a3b8;
+            cursor: pointer;
+            font-size: 0.8rem;
+            transition: all 0.3s;
+        }
+        .mode-btn.active { border-color: #6366f1; background: rgba(99,102,241,0.2); color: white; }
+        .btn {
+            width: 100%;
+            padding: 1rem;
+            border-radius: 0.75rem;
+            border: none;
+            background: linear-gradient(90deg, #6366f1, #4f46e5);
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+        .btn:disabled { background: #475569; cursor: not-allowed; }
+        .result { background: rgba(34,197,94,0.2); border: 1px solid #22c55e; padding: 1rem; border-radius: 0.5rem; margin-top: 1rem; }
+        .error { background: rgba(239,68,68,0.2); border: 1px solid #ef4444; padding: 1rem; border-radius: 0.5rem; margin-top: 1rem; }
+        .progress { height: 8px; background: #1e293b; border-radius: 4px; overflow: hidden; margin: 1rem 0; display: none; }
+        .progress-bar { height: 100%; background: linear-gradient(90deg, #6366f1, #ec4899); transition: width 0.3s; width: 0%; }
+        #status { margin-top: 1rem; }
+        .file-info { padding: 0.75rem; background: rgba(99,102,241,0.2); border-radius: 0.5rem; margin-bottom: 1rem; font-size: 0.9rem; }
+        .hint { font-size: 0.8rem; color: #64748b; margin-top: -0.5rem; margin-bottom: 1rem; }
+        /* Install prompt */
+        #installPrompt {
+            display: none;
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #6366f1;
+            color: white;
+            padding: 1rem 2rem;
+            border-radius: 2rem;
+            cursor: pointer;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧬 Mobile-Morpher</h1>
+        <p class="subtitle">Transformez vos APK Android</p>
+        
+        <div class="card">
+            <label>Mode de transformation</label>
+            <div class="modes">
+                <button class="mode-btn active" onclick="setMode('express')">⚡ Express</button>
+                <button class="mode-btn" onclick="setMode('design')">🎨 Design</button>
+                <button class="mode-btn" onclick="setMode('developer')">🔧 Dev</button>
+            </div>
+            
+            <label>Fichier APK</label>
+            <input type="file" id="file" accept=".apk">
+            <div id="fileInfo" class="file-info" style="display:none"></div>
+            
+            <label>Nom de l'application</label>
+            <input type="text" id="appName" placeholder="Mon Application">
+            
+            <label>Package ID</label>
+            <input type="text" id="packageId" placeholder="com.monapp.pro" pattern="^[a-z][a-z0-9_]*(\.[a-z][a-z0-9_]*)+$">
+            <p class="hint">Format: com.monapp.pro (minuscules, chiffres, underscore)</p>
+            
+            <div class="progress" id="progress">
+                <div class="progress-bar" id="progressBar"></div>
+            </div>
+            
+            <button class="btn" id="submitBtn" onclick="process()">Transformer l'APK</button>
+            
+            <div id="status"></div>
+        </div>
+        
+        <div class="card">
+            <p style="font-size: 0.85rem; color: #94a3b8; text-align: center;">
+                💡 Cette application peut être installée sur votre téléphone Android<br>
+                pour un accès rapide
+            </p>
+        </div>
+    </div>
+    
+    <div id="installPrompt" onclick="installApp()">📲 Installer l'app</div>
+    
+    <script>
+        let mode = 'express';
+        let apiUrl = window.location.origin;
+        
+        // Auto-detect API URL
+        if (window.location.port === '9001') {
+            apiUrl = 'http://localhost:9000';
+        }
+        
+        function setMode(m) {
+            mode = m;
+            document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
+            event.target.classList.add('active');
+        }
+        
+        // Show selected file
+        document.getElementById('file').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                document.getElementById('fileInfo').textContent = '✅ ' + file.name + ' (' + (file.size / 1024 / 1024).toFixed(1) + ' MB)';
+                document.getElementById('fileInfo').style.display = 'block';
+            }
+        });
+        
+        async function process() {
+            const file = document.getElementById('file').files[0];
+            const appName = document.getElementById('appName').value;
+            const packageId = document.getElementById('packageId').value;
+            const btn = document.getElementById('submitBtn');
+            const status = document.getElementById('status');
+            const progress = document.getElementById('progress');
+            const progressBar = document.getElementById('progressBar');
+            
+            if (!file || !appName || !packageId) {
+                status.innerHTML = '<div class="error">Veuillez remplir tous les champs</div>';
+                return;
+            }
+            
+            if (!packageId.match(/^[a-z][a-z0-9_]*(\.[a-z][a-z0-9_]*)+$/)) {
+                status.innerHTML = '<div class="error">Format Package ID invalide (ex: com.monapp.pro)</div>';
+                return;
+            }
+            
+            btn.disabled = true;
+            btn.textContent = 'Traitement en cours...';
+            progress.style.display = 'block';
+            progressBar.style.width = '10%';
+            status.innerHTML = '';
+            
+            try {
+                // Upload
+                const formData = new FormData();
+                formData.append('file', file);
+                
+                status.innerHTML = '<p style="color:#94a3b8">📤 Upload en cours...</p>';
+                const uploadRes = await fetch(apiUrl + '/api/upload', { method: 'POST', body: formData });
+                
+                if (!uploadRes.ok) throw new Error('Erreur upload: ' + uploadRes.status);
+                
+                const uploadData = await uploadRes.json();
+                progressBar.style.width = '30%';
+                
+                // Process
+                status.innerHTML += '<p style="color:#94a3b8">⚙️ Transformation en cours...</p>';
+                const processRes = await fetch(apiUrl + '/api/process/' + uploadData.session_id, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        new_app_name: appName,
+                        new_package_id: packageId,
+                        mode: mode
+                    })
+                });
+                
+                if (!processRes.ok) throw new Error('Erreur traitement: ' + processRes.status);
+                
+                const processData = await processRes.json();
+                progressBar.style.width = '80%';
+                
+                // Wait a bit for APK to be ready
+                await new Promise(r => setTimeout(r, 1000));
+                
+                progressBar.style.width = '100%';
+                
+                status.innerHTML = '<div class="result"><p>✅ Transformation réussie!</p><a href="' + apiUrl + '/api/download/' + uploadData.session_id + '" style="color:#6366f1">📥 Télécharger l\'APK transformé</a></div>';
+                
+            } catch (e) {
+                status.innerHTML = '<div class="error">❌ Erreur: ' + e.message + '</div>';
+            }
+            
+            btn.disabled = false;
+            btn.textContent = 'Transformer l\'APK';
+        }
+        
+        // PWA Install
+        let deferredPrompt;
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            document.getElementById('installPrompt').style.display = 'block';
+        });
+        
+        function installApp() {
+            deferredPrompt.prompt();
+            deferredPrompt.userChoice.then((result) => {
+                deferredPrompt = null;
+                document.getElementById('installPrompt').style.display = 'none';
+            });
+        }
+        
+        // Register service worker
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('sw.js');
+        }
+    </script>
+</body>
+</html>
