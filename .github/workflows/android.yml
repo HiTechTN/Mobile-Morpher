@@ -39,24 +39,11 @@ jobs:
           gradle --version
           gradle assembleDebug --no-daemon
       
-      - name: Find and Upload APK
-        run: |
-          find android-app -name "*.apk" -type f
-          APK_PATH=$(find android-app -name "*.apk" -type f | head -1)
-          if [ -n "$APK_PATH" ]; then
-            echo "Found APK: $APK_PATH"
-          else
-            echo "No APK found"
-            ls -la android-app/app/build/outputs/
-          fi
-        shell: bash
-
       - name: Upload APK
         uses: actions/upload-artifact@v4
-        if: hashFiles('android-app/app/build/outputs/**/*.apk')
         with:
           name: mobile-morpher-android
-          path: android-app/app/build/outputs/**/*.apk
+          path: android-app/build/outputs/apk/debug/MobileMorpher-debug.apk
       
       - name: Create Release
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'
