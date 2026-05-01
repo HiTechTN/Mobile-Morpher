@@ -156,12 +156,38 @@ Distribué sous licence **MIT**. Voir [LICENSE](LICENSE) pour plus d'information
 
 ---
 
+## 📱 Application Android
+
+### Application Native (Kotlin/Jetpack Compose)
+Le code source est dans le dossier `android-app/`.
+
+**Pour build l'APK:**
+1. Ouvrir `android-app/` dans Android Studio
+2. Build → Build APK
+3. L'APK sera dans `app/build/outputs/apk/debug/`
+
+### PWA (Application Web Progressif)
+Accessible via le navigateur: **http://localhost:9001**
+
+Peut être installée sur:
+- 📱 Android (Chrome)
+- 🍎 iOS (Safari)
+- 💻 PC (Chrome/Edge)
+
+### GitHub Actions
+Le projet inclut un workflow automatique qui compile l'APK à chaque push:
+- Fichier: `.github/workflows/android.yml`
+- Artifacts disponibles dans les actions GitHub
+
+---
+
 ## 🙏 Remerciements
 
 - [Apktool](https://apktool.org/) - Pour le décompilage/recompilage APK
 - [Apksigner](https://developer.android.com/studio/build/apksigner) - Pour la signature
 - [FastAPI](https://fastapi.tiangolo.com/) - API backend
 - [Next.js](https://nextjs.org/) - Interface utilisateur
+- [Jetpack Compose](https://developer.android.com/compose) - UI Android
 
 ---
 
