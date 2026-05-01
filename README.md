@@ -1,81 +1,172 @@
-# Mobile-Morpher
+# Mobile-Morpher 🧬
 
-> Transformez n'importe quel APK en une version personnalisée, optimisée et unique.
+<div align="center">
+
+[![Docker](https://img.shields.io/docker/image-size/hitechtn/mobile-morpher/latest?logo=docker)](https://hub.docker.com/r/hitechtn/mobile-morpher)
+[![GitHub release](https://img.shields.io/github/v/release/HiTechTN/Mobile-Morpher?logo=github)](https://github.com/HiTechTN/Mobile-Morpher/releases)
+[![License](https://img.shields.io/github/license/HiTechTN/Mobile-Morpher)](LICENSE)
+[![Platform](https://img.shields.io/badge/platform-Docker-blue)](https://www.docker.com/)
+
+**Transformez n'importe quel APK Android en une version personnalisée, optimisée et unique.**
+
+[Site Web](https://morpher.hitechtn.com) · [Documentation](https://github.com/HiTechTN/Mobile-Morpher/wiki) · [Signaler un bug](https://github.com/HiTechTN/Mobile-Morpher/issues)
+
+</div>
+
+---
+
+## ✨ Fonctionnalités
+
+| Feature | Description |
+|---------|-------------|
+| 🎯 **Rename** | Changez le nom et le Package ID de n'importe quelle app |
+| 🔄 **Rebrand** | Personnalisez icônes, couleurs et ressources |
+| 🔐 **Signature** | Génération automatique de clés de signature uniques |
+| ⚡ **Rapide** | Traitement en 2-3 minutes via API REST |
+| 🔒 **Sécurisé** | Nettoyage automatique après chaque session |
+| 🎨 **Design** | Personnalisation avancée des thèmes Material Design |
+
+---
 
 ## 🚀 Démarrage Rapide
 
 ### Prérequis
-- Docker & Docker Compose
-- 4 GB RAM minimum
-- 10 GB espace disque
 
-### Installation en 3 étapes
+- **Docker** et **Docker Compose** (v2+)
+- **4 GB RAM** minimum
+- **10 GB** espace disque
+
+### Installation
 
 ```bash
 # 1. Cloner le projet
-git clone https://github.com/votre-username/Mobile-Morpher.git
+git clone https://github.com/HiTechTN/Mobile-Morpher.git
 cd Mobile-Morpher
 
 # 2. Lancer l'environnement
-docker compose up -d
+docker compose up -d --build
 
 # 3. Accéder à l'application
 # Interface Web: http://localhost:9001
-# API Docs: http://localhost:9000/docs
+# API Docs:      http://localhost:9000/docs
 ```
+
+---
 
 ## 📱 Modes d'Utilisation
 
-### Mode Express
-Transformation rapide en 120 secondes : changement de nom et d'icône.
+### ⚡ Mode Express
+Transformation rapide (~2 min) : changement de nom et Package ID.
 
-### Mode Design
-Personnalisation de l'esthétique : couleurs, polices, thèmes Material Design 3.
+### 🎨 Mode Design  
+Personnalisation complète : couleurs, polices, icônes, thèmes Material Design 3.
 
-### Mode Développeur
-Accès complet au code Smali, édition des classes et configuration avancée.
+### 🔧 Mode Développeur
+Accès complet au code Smali décompilé pour modifications avancées.
+
+---
+
+## 🖥️ Interface Web
+
+![Interface](docs/screenshots/web-ui.png)
+
+```
+http://localhost:9001
+```
+
+### Utilisation
+
+1. **Sélectionner** un fichier APK
+2. **Choisir** le mode de transformation
+3. **Configurer** : Nom de l'app + Package ID
+4. **Transformez** et télécharghez le résultat
+
+---
+
+## 🔌 API REST
+
+```bash
+# Upload APK
+curl -X POST http://localhost:9000/api/upload \
+  -F "file=@app.apk"
+
+# Transformer
+curl -X POST http://localhost:9000/api/process/{session_id} \
+  -H "Content-Type: application/json" \
+  -d '{"new_app_name": "MonApp", "new_package_id": "com.monapp.pro", "mode": "express"}'
+
+# Télécharger
+curl -O http://localhost:9000/shared-volume/{session_id}/modified.apk
+```
+
+Documentation interactive : http://localhost:9000/docs
+
+---
 
 ## 🏗 Architecture
 
 ```
 Mobile-Morpher/
-├── docker-compose.yml       # Orchestration multi-OS
-├── web-ui/                  # Frontend PWA (Next.js)
+├── docker-compose.yml       # Orchestration Docker
+├── web-ui/                  # Frontend Next.js
+│   └── pages/
+│       └── index.js        # Interface utilisateur
 ├── api-service/             # Backend FastAPI
-│   ├── core/               # Apktool & Signer
-│   ├── morpher/            # Refactoring & Renaming
-│   ├── ai-engine/          # Analyse IA
-│   └── Dockerfile
-└── shared-volume/          # Stockage temporaire sécurisé
+│   ├── main.py            # API REST
+│   ├── core/              # Traitement APK (Apktool)
+│   ├── morpher/           # Refactoring & Renaming
+│   └── ai_engine/         # Analyse IA (optionnel)
+├── shared-volume/          # Stockage temporaire
+├── docs/                   # Documentation
+│   ├── tutorials/        # Tutoriels vidéo
+│   └── wiki/             # Wiki complet
+└── INSTALL.md             # Guide multi-plateforme
 ```
 
-## ⚙️ Configuration
+---
 
-### Variables d'environnement (.env)
-```env
-API_PORT=8000
-WEB_PORT=3000
-WORK_DIR=/app/shared-volume
-AI_PROVIDER=ollama  # ou openai
-AI_MODEL=codellama  # pour Ollama
-```
+## 📦 Téléchargements
 
-## 🔒 Sécurité
+| Platform | Status | Download |
+|----------|--------|----------|
+| 🐧 Linux | ✅ Disponible | [Docker](https://github.com/HiTechTN/Mobile-Morpher/releases) |
+| 🪟 Windows | ✅ Disponible | [Docker Desktop](https://www.docker.com/products/docker-desktop/) |
+| 🍎 macOS | ✅ Disponible | [Docker Desktop](https://www.docker.com/products/docker-desktop/) |
+| 📱 Android | 🔜 Bientôt | Termux + Docker |
 
-- Aucun fichier conservé après la session
-- Nettoyage automatique du volume partagé
-- Clés de signature uniques par projet
-
-## 📖 Documentation
-
-- [Guide Utilisateur](docs/USER_GUIDE.md)
-- [Documentation Technique](docs/TECHNICAL_DOC.md)
-- [API Reference](docs/API_REFERENCE.md)
+---
 
 ## 🤝 Contribution
 
-Les contributions sont les bienvenues ! Voir [CONTRIBUTING.md](CONTRIBUTING.md).
+Les contributions sont les bienvenues !
 
-## 📄 Licence
+1. **Fork** le projet
+2. Créer une **feature branch** (`git checkout -b feature/AmazingFeature`)
+3. **Commit** vos changements (`git commit -m 'Add AmazingFeature'`)
+4. **Push** vers la branch (`git push origin feature/AmazingFeature`)
+5. Ouvrir une **Pull Request**
 
-MIT License - Voir [LICENSE](LICENSE)
+Voir [CONTRIBUTING.md](CONTRIBUTING.md) pour plus de détails.
+
+---
+
+## 📝 License
+
+Distribué sous licence **MIT**. Voir [LICENSE](LICENSE) pour plus d'informations.
+
+---
+
+## 🙏 Remerciements
+
+- [Apktool](https://apktool.org/) - Pour le décompilage/recompilage APK
+- [Apksigner](https://developer.android.com/studio/build/apksigner) - Pour la signature
+- [FastAPI](https://fastapi.tiangolo.com/) - API backend
+- [Next.js](https://nextjs.org/) - Interface utilisateur
+
+---
+
+<div align="center">
+
+Développé avec ❤️ par [HiTechTN](https://github.com/HiTechTN)
+
+</div>

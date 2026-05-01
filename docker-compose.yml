@@ -11,8 +11,6 @@ services:
       - PYTHONUNBUFFERED=1
       - WORK_DIR=/app/shared-volume
     restart: unless-stopped
-    networks:
-      - mobile-morpher-network
 
   web-ui:
     build: ./web-ui
@@ -21,12 +19,4 @@ services:
       - "9001:3000"
     depends_on:
       - api-service
-    environment:
-      - NEXT_PUBLIC_API_URL=http://mobile-morpher-api:8000
     restart: unless-stopped
-    networks:
-      - mobile-morpher-network
-
-networks:
-  mobile-morpher-network:
-    driver: bridge

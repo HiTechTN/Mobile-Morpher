@@ -16,8 +16,7 @@ class APKProcessor:
             "-f",
             str(self.apk_path),
             "-o",
-            str(self.decompiled_dir),
-            "--no-res"
+            str(self.decompiled_dir)
         ]
         subprocess.run(cmd, check=True)
         

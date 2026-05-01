@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mobile-Morpher - Transformez vos APK Android</title>
+    <meta name="description" content="Transformez n'importe quel APK Android en version personnalisée avec Mobile-Morpher.">
+    <link rel="stylesheet" href="style.css">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧬</text></svg>">
+</head>
+<body>
+    <header>
+        <nav class="container">
+            <div class="logo">🧬 Mobile-Morpher</div>
+            <ul class="nav-links">
+                <li><a href="#features">Fonctionnalités</a></li>
+                <li><a href="#download">Télécharger</a></li>
+                <li><a href="#docs">Documentation</a></li>
+                <li><a href="#github">GitHub</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <section class="hero">
+            <div class="container">
+                <h1>Transformez vos APK Android</h1>
+                <p class="subtitle">Personnalisez, rebrandez et optimisez vos applications Android en quelques clics</p>
+                <div class="cta-buttons">
+                    <a href="#download" class="btn btn-primary">Commencer</a>
+                    <a href="#demo" class="btn btn-secondary">Voir la démo</a>
+                </div>
+                <div class="badges">
+                    <span class="badge">Docker</span>
+                    <span class="badge">FastAPI</span>
+                    <span class="badge">Next.js</span>
+                    <span class="badge">Open Source</span>
+                </div>
+            </div>
+        </section>
+
+        <section id="features" class="features">
+            <div class="container">
+                <h2>✨ Fonctionnalités</h2>
+                <div class="feature-grid">
+                    <div class="feature-card">
+                        <div class="feature-icon">🎯</div>
+                        <h3>Rename</h3>
+                        <p>Changez le nom et le Package ID de n'importe quelle application Android</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">🔄</div>
+                        <h3>Rebrand</h3>
+                        <p>Personnalisez icônes, couleurs et ressources visuelles</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">🔐</div>
+                        <h3>Signature</h3>
+                        <p>Génération automatique de clés de signature uniques</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">⚡</div>
+                        <h3>Rapide</h3>
+                        <p>Traitement en 2-3 minutes via API REST</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">🔒</div>
+                        <h3>Sécurisé</h3>
+                        <p>Nettoyage automatique après chaque session</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">🎨</div>
+                        <h3>Design</h3>
+                        <p>Personnalisation thèmes Material Design 3</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="download" class="download">
+            <div class="container">
+                <h2>📦 Téléchargements</h2>
+                <div class="platforms">
+                    <div class="platform-card">
+                        <h3>🐧 Linux</h3>
+                        <p>Ubuntu, Debian, Fedora, Arch</p>
+                        <pre><code>docker pull hitechtn/mobile-morpher:latest</code></pre>
+                        <a href="https://github.com/HiTechTN/Mobile-Morpher/releases" class="btn btn-small">Télécharger</a>
+                    </div>
+                    <div class="platform-card">
+                        <h3>🪟 Windows</h3>
+                        <p>Windows 10/11 avec Docker Desktop</p>
+                        <pre><code>docker pull hitechtn/mobile-morpher:latest</code></pre>
+                        <a href="https://www.docker.com/products/docker-desktop/" class="btn btn-small">Docker Desktop</a>
+                    </div>
+                    <div class="platform-card">
+                        <h3>🍎 macOS</h3>
+                        <p>Apple Silicon & Intel</p>
+                        <pre><code>docker pull hitechtn/mobile-morpher:latest</code></pre>
+                        <a href="https://www.docker.com/products/docker-desktop/" class="btn btn-small">Docker Desktop</a>
+                    </div>
+                    <div class="platform-card">
+                        <h3>📱 Android</h3>
+                        <p>Via Termux</p>
+                        <pre><code>pkg install docker docker-compose</code></pre>
+                        <span class="badge-soon">Bientôt disponible</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="demo" class="demo">
+            <div class="container">
+                <h2>🎬 Démo</h2>
+                <div class="demo-content">
+                    <div class="demo-info">
+                        <h3>Comment ça marche ?</h3>
+                        <ol>
+                            <li>Uploadez votre fichier APK</li>
+                            <li>Choisissez le mode de transformation</li>
+                            <li>Configurez le nom et Package ID</li>
+                            <li>Transformez et téléchargez !</li>
+                        </ol>
+                        <p class="note">💡 Astuce : Utilisez des APK non protégés pour de meilleurs résultats.</p>
+                    </div>
+                    <div class="demo-screenshot">
+                        <img src="screenshots/web-preview.png" alt="Interface Mobile-Morpher" onerror="this.style.display='none'">
+                        <p class="caption">Interface Web - http://localhost:9001</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="docs" class="docs">
+            <div class="container">
+                <h2>📚 Documentation</h2>
+                <div class="doc-links">
+                    <a href="../../INSTALL.md" class="doc-card">
+                        <span class="doc-icon">📖</span>
+                        <h4>Guide d'installation</h4>
+                        <p>Multi-plateforme (Windows, macOS, Linux, Android)</p>
+                    </a>
+                    <a href="../../api-service/main.py" class="doc-card">
+                        <span class="doc-icon">🔌</span>
+                        <h4>API Reference</h4>
+                        <p>Documentation Swagger à http://localhost:9000/docs</p>
+                    </a>
+                    <a href="../tutorials/VIDEOS_TUTORIAL.md" class="doc-card">
+                        <span class="doc-icon">🎥</span>
+                        <h4>Tutoriels Vidéo</h4>
+                        <p>Guides vidéo pour installation et utilisation</p>
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <section id="github" class="github">
+            <div class="container">
+                <h2>🐙 GitHub</h2>
+                <div class="github-info">
+                    <p>Forkez le projet, signalez des bugs et contribuez !</p>
+                    <div class="github-links">
+                        <a href="https://github.com/HiTechTN/Mobile-Morpher" class="btn btn-github">
+                            <span>⭐</span> Star sur GitHub
+                        </a>
+                        <a href="https://github.com/HiTechTN/Mobile-Morpher/issues" class="btn btn-outline">
+                            Signaler un problème
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>© 2024 Mobile-Morpher. Licensed under <a href="../../LICENSE">MIT</a>.</p>
+            <p>Développé avec ❤️ par <a href="https://github.com/HiTechTN">HiTechTN</a></p>
+        </div>
+    </footer>
+</body>
+</html>

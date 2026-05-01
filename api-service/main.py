@@ -53,8 +53,9 @@ async def process_apk(session_id: str, config: RefactorConfig):
         old_package = processor.get_package_name()
         old_app_name = processor.get_app_name()
         
+        decompiled_dir = f"{work_dir}/decompiled"
         refactor_results = refactor_apk(
-            work_dir,
+            decompiled_dir,
             old_package,
             config.new_package_id,
             old_app_name,
@@ -78,7 +79,9 @@ async def process_apk(session_id: str, config: RefactorConfig):
         }
         
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        import traceback
+        error_detail = f"{str(e)}\n{traceback.format_exc()}"
+        raise HTTPException(status_code=500, detail=error_detail)
 
 @app.get("/api/download/{session_id}")
 async def download_apk(session_id: str):
