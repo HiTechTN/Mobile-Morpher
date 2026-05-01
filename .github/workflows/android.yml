@@ -25,17 +25,20 @@ jobs:
       - name: Set up Android SDK
         uses: android-actions/setup-android@v2
       
-      - name: Setup Gradle Wrapper
+      - name: Create project structure
         working-directory: android-app
         run: |
-          touch settings.gradle
-          gradle wrapper --gradle-version 8.4
+          # Create minimal settings.gradle
+          echo 'rootProject.name = "MobileMorpher"' > settings.gradle
+          # Download Gradle wrapper
+          mkdir -p gradle/wrapper
+          curl -sL https://services.gradle.org/distributions/gradle-8.2-bin.zip -o /tmp/gradle.zip
+          unzip -q /tmp/gradle.zip -d /tmp
+          /tmp/gradle-8.2/bin/gradle -p android-app wrapper --gradle-version 8.2
 
       - name: Build APK
         working-directory: android-app
-        run: |
-          chmod +x gradlew
-          ./gradlew assembleDebug
+        run: ./gradlew assembleDebug --no-daemon
       
       - name: Upload APK
         uses: actions/upload-artifact@v4
