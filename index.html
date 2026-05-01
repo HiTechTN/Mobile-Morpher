@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mobile-Morpher 🧬 - Documentation</title>
+    <meta name="description" content="Transformez vos applications Android APK">
+    <link rel="stylesheet" href="style.css">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧬</text></svg>">
+</head>
+<body>
+    <header>
+        <nav class="container">
+            <div class="logo">🧬 Mobile-Morpher</div>
+            <ul class="nav-links">
+                <li><a href="#install">Installation</a></li>
+                <li><a href="#usage">Utilisation</a></li>
+                <li><a href="#api">API</a></li>
+                <li><a href="#download">Télécharger</a></li>
+                <li><a href="https://github.com/HiTechTN/Mobile-Morpher" target="_blank">GitHub</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <section class="hero">
+            <div class="container">
+                <h1>Mobile-Morpher</h1>
+                <p class="subtitle">Transformez vos applications Android APK en quelques clics</p>
+                
+                <div class="badges">
+                    <span class="badge">Docker</span>
+                    <span class="badge">FastAPI</span>
+                    <span class="badge">Android</span>
+                    <span class="badge">Open Source</span>
+                </div>
+                
+                <div class="cta">
+                    <a href="#install" class="btn btn-primary">Commencer</a>
+                    <a href="https://github.com/HiTechTN/Mobile-Morpher/releases/latest" class="btn btn-secondary">Télécharger</a>
+                </div>
+            </div>
+        </section>
+
+        <section id="install" class="install">
+            <div class="container">
+                <h2>⚡ Installation Rapide</h2>
+                
+                <div class="platforms">
+                    <div class="platform-card">
+                        <h3>🐧 Linux</h3>
+                        <pre><code>git clone https://github.com/HiTechTN/Mobile-Morpher.git
+cd Mobile-Morpher
+docker compose up -d</code></pre>
+                    </div>
+                    
+                    <div class="platform-card">
+                        <h3>🪟 Windows</h3>
+                        <pre><code># Installer Docker Desktop
+git clone https://github.com/HiTechTN/Mobile-Morpher.git
+cd Mobile-Morpher
+docker compose up -d</code></pre>
+                    </div>
+                    
+                    <div class="platform-card">
+                        <h3>🍎 macOS</h3>
+                        <pre><code># Installer Docker Desktop
+git clone https://github.com/HiTechTN/Mobile-Morpher.git
+cd Mobile-Morpher
+docker compose up -d</code></pre>
+                    </div>
+                </div>
+                
+                <div class="info-box">
+                    <h3>📋 Accès</h3>
+                    <ul>
+                        <li><strong>Interface Web:</strong> <a href="http://localhost:9001" target="_blank">http://localhost:9001</a></li>
+                        <li><strong>API:</strong> <a href="http://localhost:9000/docs" target="_blank">http://localhost:9000/docs</a></li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <section id="usage" class="usage">
+            <div class="container">
+                <h2>📱 Utilisation</h2>
+                
+                <div class="steps">
+                    <div class="step">
+                        <div class="step-number">1</div>
+                        <div class="step-content">
+                            <h3>Uploader un APK</h3>
+                            <p>Glissez-déposez ou sélectionnez un fichier APK sur l'interface web</p>
+                        </div>
+                    </div>
+                    
+                    <div class="step">
+                        <div class="step-number">2</div>
+                        <div class="step-content">
+                            <h3>Choisir le mode</h3>
+                            <ul>
+                                <li><strong>Express:</strong> Transformation rapide (nom + package)</li>
+                                <li><strong>Design:</strong> Personnalisation complète</li>
+                                <li><strong>Developer:</strong> Accès au code Smali</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="step">
+                        <div class="step-number">3</div>
+                        <div class="step-content">
+                            <h3>Configurer</h3>
+                            <p>Entrez le nouveau nom de l'application et le Package ID</p>
+                        </div>
+                    </div>
+                    
+                    <div class="step">
+                        <div class="step-number">4</div>
+                        <div class="step-content">
+                            <h3>Transformer</h3>
+                            <p>Cliquez sur "Transformer" et attendez la compilation</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="api" class="api">
+            <div class="container">
+                <h2>🔌 API REST</h2>
+                
+                <div class="endpoints">
+                    <div class="endpoint">
+                        <div class="method method-post">POST</div>
+                        <div class="endpoint-info">
+                            <code>/api/upload</code>
+                            <p>Uploader un fichier APK</p>
+                        </div>
+                    </div>
+                    
+                    <div class="endpoint">
+                        <div class="method method-post">POST</div>
+                        <div class="endpoint-info">
+                            <code>/api/process/{session_id}</code>
+                            <p>Transformer l'APK</p>
+                        </div>
+                    </div>
+                    
+                    <div class="endpoint">
+                        <div class="method method-get">GET</div>
+                        <div class="endpoint-info">
+                            <code>/api/download/{session_id}</code>
+                            <p>Télécharger l'APK transformé</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <p class="api-docs">
+                    Documentation interactive: <a href="http://localhost:9000/docs" target="_blank">Swagger UI</a>
+                </p>
+            </div>
+        </section>
+
+        <section id="download" class="download">
+            <div class="container">
+                <h2>📦 Téléchargements</h2>
+                
+                <div class="download-cards">
+                    <div class="download-card">
+                        <h3>📱 Application Android</h3>
+                        <p>Application native pour transformer vos APK</p>
+                        <a href="https://github.com/HiTechTN/Mobile-Morpher/releases/tag/android-v1.0.1" class="btn-download">
+                            Télécharger l'APK
+                        </a>
+                    </div>
+                    
+                    <div class="download-card">
+                        <h3>💻 Code Source</h3>
+                        <p>Code complet du projet</p>
+                        <a href="https://github.com/HiTechTN/Mobile-Morpher/releases/latest" class="btn-download">
+                            Voir les releases
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="workflow-status">
+            <div class="container">
+                <h2>⚙️ Build Status</h2>
+                <p>Le build Android est automatique via GitHub Actions</p>
+                <a href="https://github.com/HiTechTN/Mobile-Morpher/actions/workflows/android.yml" class="btn-github" target="_blank">
+                    Voir les builds
+                </a>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>© 2024 Mobile-Morpher - <a href="https://github.com/HiTechTN/Mobile-Morpher" target="_blank">GitHub</a></p>
+            <p>Licence MIT</p>
+        </div>
+    </footer>
+</body>
+</html>
