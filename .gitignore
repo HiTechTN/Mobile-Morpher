@@ -22,3 +22,6 @@ keystore.jks
 .vscode/
 .idea/
 *.swp
+releases/*.zip
+releases/*.tar.gz
+mobile-morpher-*-linux-x64/
