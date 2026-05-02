@@ -258,16 +258,29 @@ async def process_apk(session_id: str, config: RefactorConfig):
                 f.write(content)
         
         # Mise à jour des fichiers smali
-        for root, dirs, files in os.walk(decompiled_dir):
-            for file in files:
-                if file.endswith('.smali'):
-                    filepath = os.path.join(root, file)
-                    with open(filepath, 'r', encoding='utf-8') as f:
-                        content = f.read()
-                    if old_package in content:
-                        content = content.replace(old_package, config.new_package_id)
-                        with open(filepath, 'w', encoding='utf-8') as f:
-                            f.write(content)
+        old_package_path = old_package.replace('.', '/')
+        new_package_path = config.new_package_id.replace('.', '/')
+        smali_dirs = [d for d in os.listdir(decompiled_dir) if d.startswith('smali')]
+        
+        for sdir in smali_dirs:
+            for root, dirs, files in os.walk(os.path.join(decompiled_dir, sdir)):
+                for file in files:
+                    if file.endswith('.smali'):
+                        filepath = os.path.join(root, file)
+                        with open(filepath, 'r', encoding='utf-8') as f:
+                            content = f.read()
+                        
+                        updated = False
+                        if old_package in content:
+                            content = content.replace(old_package, config.new_package_id)
+                            updated = True
+                        if old_package_path in content:
+                            content = content.replace(old_package_path, new_package_path)
+                            updated = True
+                        
+                        if updated:
+                            with open(filepath, 'w', encoding='utf-8') as f:
+                                f.write(content)
         
         # Mise à jour des ressources
         strings_files = []

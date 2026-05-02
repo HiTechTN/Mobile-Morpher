@@ -1,5 +1,6 @@
 from fastapi import FastAPI, UploadFile, File, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import FileResponse
 from pydantic import BaseModel
 from typing import Optional, List
 import shutil
@@ -88,7 +89,8 @@ async def download_apk(session_id: str):
     output_path = f"/app/shared-volume/{session_id}/modified.apk"
     if not os.path.exists(output_path):
         raise HTTPException(status_code=404, detail="APK not found")
-    return {"download_url": f"/shared-volume/{session_id}/modified.apk"}
+    return FileResponse(output_path, media_type="application/vnd.android.package-archive", 
+                        filename="modified.apk")
 
 @app.delete("/api/cleanup/{session_id}")
 async def cleanup_session(session_id: str):

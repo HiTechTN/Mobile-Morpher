@@ -55,18 +55,27 @@ class AppRefactor:
         return 1
     
     def _update_smali_files(self) -> int:
-        smali_dir = self.work_dir / 'smali'
-        if not smali_dir.exists():
-            return 0
-            
         count = 0
-        for smali_file in smali_dir.rglob('*.smali'):
-            content = smali_file.read_text(encoding='utf-8')
-            
-            if self.old_package in content:
-                content = content.replace(self.old_package, self.new_package)
-                smali_file.write_text(content, encoding='utf-8')
-                count += 1
+        for base_dir_name in ['smali', 'smali_classes2', 'smali_classes3', 'smali_classes4', 'smali_classes5']:
+            smali_dir = self.work_dir / base_dir_name
+            if not smali_dir.exists():
+                continue
+                
+            for smali_file in smali_dir.rglob('*.smali'):
+                content = smali_file.read_text(encoding='utf-8')
+                
+                updated = False
+                if self.old_package in content:
+                    content = content.replace(self.old_package, self.new_package)
+                    updated = True
+                    
+                if self.old_package_path in content:
+                    content = content.replace(self.old_package_path, self.new_package_path)
+                    updated = True
+                
+                if updated:
+                    smali_file.write_text(content, encoding='utf-8')
+                    count += 1
                 
         return count
     

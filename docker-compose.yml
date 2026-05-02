@@ -10,6 +10,9 @@ services:
     environment:
       - PYTHONUNBUFFERED=1
       - WORK_DIR=/app/shared-volume
+    dns:
+      - 8.8.8.8
+      - 8.8.4.4
     restart: unless-stopped
 
   web-ui:
@@ -19,4 +22,7 @@ services:
       - "9001:3000"
     depends_on:
       - api-service
+    dns:
+      - 8.8.8.8
+      - 8.8.4.4
     restart: unless-stopped
