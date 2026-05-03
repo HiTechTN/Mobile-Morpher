@@ -3,10 +3,9 @@ import re
 import shutil
 from pathlib import Path
 from typing import Dict
-import xml.etree.ElementTree as ET
 
 class AppRefactor:
-    def __init__(self, work_dir: str, old_package: str, new_package: str, 
+    def __init__(self, work_dir: str, old_package: str, new_package: str,
                  old_app_name: str, new_app_name: str):
         self.work_dir = Path(work_dir)
         self.old_package = old_package
@@ -55,27 +54,18 @@ class AppRefactor:
         return 1
     
     def _update_smali_files(self) -> int:
+        smali_dir = self.work_dir / 'smali'
+        if not smali_dir.exists():
+            return 0
+            
         count = 0
-        for base_dir_name in ['smali', 'smali_classes2', 'smali_classes3', 'smali_classes4', 'smali_classes5']:
-            smali_dir = self.work_dir / base_dir_name
-            if not smali_dir.exists():
-                continue
-                
-            for smali_file in smali_dir.rglob('*.smali'):
-                content = smali_file.read_text(encoding='utf-8')
-                
-                updated = False
-                if self.old_package in content:
-                    content = content.replace(self.old_package, self.new_package)
-                    updated = True
-                    
-                if self.old_package_path in content:
-                    content = content.replace(self.old_package_path, self.new_package_path)
-                    updated = True
-                
-                if updated:
-                    smali_file.write_text(content, encoding='utf-8')
-                    count += 1
+        for smali_file in smali_dir.rglob('*.smali'):
+            content = smali_file.read_text(encoding='utf-8')
+            
+            if self.old_package in content:
+                content = content.replace(self.old_package, self.new_package)
+                smali_file.write_text(content, encoding='utf-8')
+                count += 1
                 
         return count
     

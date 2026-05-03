@@ -75,11 +75,11 @@ export default function Home() {
 
     try {
       setProgress(20)
-      const uploadRes = await axios.post(`${apiBase}/upload`, formData)
+      const uploadRes = await axios.post(`${apiBase}/api/upload`, formData)
       const sessionId = uploadRes.data.session_id
 
       setProgress(50)
-      const processRes = await axios.post(`${apiBase}/process/${sessionId}`, {
+      const processRes = await axios.post(`${apiBase}/api/process/${sessionId}`, {
         new_app_name: appName,
         new_package_id: packageId,
         mode: mode
@@ -258,7 +258,7 @@ export default function Home() {
                 <h3 className="text-xl font-semibold text-green-400 mb-2">Transformation réussie!</h3>
                 <p className="text-slate-400 mb-4">Votre APK est prêt au téléchargement</p>
                 <a
-                  href={`${apiBase}/download/${result.sessionId}`}
+                  href={`${apiBase}/api/download/${result.sessionId}`}
                   className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 rounded-lg font-semibold transition-all"
                 >
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
