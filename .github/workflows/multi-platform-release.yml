@@ -1,0 +1,94 @@
+name: Multi-Platform Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+
+jobs:
+  docker:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        platform: [linux/amd64, linux/arm64]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+        
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+        
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+          
+      - name: Build and push multi-arch images
+        run: |
+          docker buildx build \
+            --platform ${{ matrix.platform }} \
+            -t ghcr.io/${{ github.repository }}/api-service:${{ github.ref_name }}-${{ matrix.platform == 'linux/amd64' && 'amd64' || 'arm64' }} \
+            -f api-service/Dockerfile \
+            api-service/
+            
+          docker buildx build \
+            --platform ${{ matrix.platform }} \
+            -t ghcr.io/${{ github.repository }}/web-ui:${{ github.ref_name }}-${{ matrix.platform == 'linux/amd64' && 'amd64' || 'arm64' }} \
+            -f web-ui/Dockerfile \
+            web-ui/
+            
+      - name: Create manifest and push
+        run: |
+          docker manifest create ghcr.io/${{ github.repository }}/api-service:${{ github.ref_name }} \
+            ghcr.io/${{ github.repository }}/api-service:${{ github.ref_name }}-amd64 \
+            ghcr.io/${{ github.repository }}/api-service:${{ github.ref_name }}-arm64
+            
+          docker manifest push ghcr.io/${{ github.repository }}/api-service:${{ github.ref_name }}
+            
+          docker manifest create ghcr.io/${{ github.repository }}/web-ui:${{ github.ref_name }} \
+            ghcr.io/${{ github.repository }}/web-ui:${{ github.ref_name }}-amd64 \
+            ghcr.io/${{ github.repository }}/web-ui:${{ github.ref_name }}-arm64
+            
+          docker manifest push ghcr.io/${{ github.repository }}/web-ui:${{ github.ref_name }}
+
+  release:
+    needs: docker
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        
+      - name: Create Release Archives
+        run: |
+          # Linux/macOS
+          tar -czf mobile-morpher-${{ github.ref_name }}-linux.tar.gz \
+            docker-compose.yml install.sh INSTALL.md README.md
+            
+          # Windows
+          zip -r mobile-morpher-${{ github.ref_name }}-windows.zip \
+            docker-compose.yml install.bat INSTALL.md README.md
+            
+          # Android (Termux)
+          tar -czf mobile-morpher-${{ github.ref_name }}-android.tar.gz \
+            docker-compose.yml install.sh INSTALL.md README.md
+            
+          # iOS (iSH)
+          tar -czf mobile-morpher-${{ github.ref_name }}-ios.tar.gz \
+            docker-compose.yml install.sh INSTALL.md README.md
+            
+      - name: Upload Release Assets
+        uses: softprops/action-gh-release@v1
+        with:
+          files: |
+            mobile-morpher-${{ github.ref_name }}-linux.tar.gz
+            mobile-morpher-${{ github.ref_name }}-windows.zip
+            mobile-morpher-${{ github.ref_name }}-android.tar.gz
+            mobile-morpher-${{ github.ref_name }}-ios.tar.gz
+          tag_name: ${{ github.ref_name }}
+          token: ${{ secrets.GITHUB_TOKEN }}
