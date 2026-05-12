@@ -3,6 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse
 from pydantic import BaseModel
 from typing import Optional, List
+from pathlib import Path
 import shutil
 import os
 import uuid
@@ -27,6 +28,22 @@ class RefactorConfig(BaseModel):
     new_package_id: str
     mode: str = "express"
     ai_suggestions: Optional[List[str]] = []
+
+def apply_modern_theme(decompiled_dir: str):
+    """Apply Material Design 3 theme to the decompiled APK"""
+    try:
+        colors_path = Path(decompiled_dir) / "res" / "values" / "colors.xml"
+        if colors_path.exists():
+            content = colors_path.read_text()
+            if "colorPrimary" not in content:
+                colors_content = content.replace("</resources>", 
+                    """    <color name="colorPrimary">#6750A4</color>
+    <color name="colorPrimaryDark">#4F378B</color>
+    <color name="colorAccent">#625B71</color>
+</resources>""")
+                colors_path.write_text(colors_content)
+    except Exception:
+        pass
 
 @app.post("/api/upload")
 async def upload_apk(file: UploadFile = File(...)):
@@ -63,18 +80,28 @@ async def process_apk(session_id: str, config: RefactorConfig):
             config.new_app_name
         )
         
-        if config.mode in ["design", "developer"]:
-            analyzer = AIAnalyzer(work_dir)
-            suggestions = analyzer.analyze()
-        else:
+        # Mode-specific processing
+        if config.mode == "express":
             suggestions = []
+            
+        elif config.mode == "design":
+            analyzer = AIAnalyzer(decompiled_dir)
+            suggestions = analyzer.analyze()
+            apply_modern_theme(decompiled_dir)
+            
+        elif config.mode == "developer":
+            analyzer = AIAnalyzer(decompiled_dir)
+            suggestions = analyzer.analyze()
         
         processor.rebuild()
-        processor.sign()
+        processor.sign(config.new_package_id)
         
         return {
             "status": "success",
             "session_id": session_id,
+            "mode": config.mode,
+            "old_package": old_package,
+            "new_package": config.new_package_id,
             "refactor_details": refactor_results,
             "suggestions": suggestions
         }
@@ -82,7 +109,7 @@ async def process_apk(session_id: str, config: RefactorConfig):
     except Exception as e:
         error_msg = str(e)
         if "returned non-zero exit status" in error_msg:
-            raise HTTPException(status_code=400, detail="APK invalide ou corrompu. Veuillez uploader un fichier APK valide (non modifié ou complet).")
+            raise HTTPException(status_code=400, detail="APK invalide ou corrompu. Veuillez uploader un fichier APK valide.")
         import traceback
         error_detail = f"{str(e)}\n{traceback.format_exc()}"
         raise HTTPException(status_code=500, detail=error_detail)

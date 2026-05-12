@@ -62,24 +62,29 @@ class APKProcessor:
         ]
         subprocess.run(cmd, check=True)
         
-    def sign(self):
+    def sign(self, package_id: str = None):
         apk_path = self.work_dir / "modified.apk"
         keystore = self.work_dir / "keystore.jks"
         
         if not keystore.exists():
-            self._generate_keystore(keystore)
+            self._generate_keystore(keystore, package_id)
         
+        # Sign with both v2 and v3 for better compatibility
         cmd = [
             "apksigner",
             "sign",
             "--ks", str(keystore),
             "--ks-key-alias", "mobile-morpher",
             "--ks-pass", "pass:changeit",
+            "--v2-signing-enabled", "true",
+            "--v3-signing-enabled", "true",
             str(apk_path)
         ]
         subprocess.run(cmd, check=True)
     
-    def _generate_keystore(self, keystore_path: Path):
+    def _generate_keystore(self, keystore_path: Path, package_id: str = None):
+        # Use package ID in the certificate for better identification
+        cn_name = package_id.split('.')[-1] if package_id else "MobileMorpher"
         cmd = [
             "keytool",
             "-genkeypair",
@@ -87,10 +92,11 @@ class APKProcessor:
             "-keystore", str(keystore_path),
             "-alias", "mobile-morpher",
             "-keyalg", "RSA",
-            "-keysize", "2048",
+            "-keysize", "4096",  # Use stronger key
             "-validity", "10000",
             "-storepass", "changeit",
             "-keypass", "changeit",
-            "-dname", "CN=Mobile Morpher, OU=Development, O=MobileMorpher, L=Unknown, ST=Unknown, C=US"
+            "-dname", f"CN={cn_name}, OU=Development, O=MobileMorpher, L=Unknown, ST=Unknown, C=US",
+            "-ext", "SAN=dns:{cn_name}"
         ]
         subprocess.run(cmd, check=True)
