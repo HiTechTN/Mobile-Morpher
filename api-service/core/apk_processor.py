@@ -83,8 +83,8 @@ class APKProcessor:
         subprocess.run(cmd, check=True)
     
     def _generate_keystore(self, keystore_path: Path, package_id: str = None):
-        # Use package ID in the certificate for better identification
-        cn_name = package_id.split('.')[-1] if package_id else "MobileMorpher"
+        # Use a simple name for the certificate
+        cn_name = "MobileMorpher"
         cmd = [
             "keytool",
             "-genkeypair",
@@ -92,11 +92,10 @@ class APKProcessor:
             "-keystore", str(keystore_path),
             "-alias", "mobile-morpher",
             "-keyalg", "RSA",
-            "-keysize", "4096",  # Use stronger key
+            "-keysize", "2048",
             "-validity", "10000",
             "-storepass", "changeit",
             "-keypass", "changeit",
-            "-dname", f"CN={cn_name}, OU=Development, O=MobileMorpher, L=Unknown, ST=Unknown, C=US",
-            "-ext", "SAN=dns:{cn_name}"
+            "-dname", f"CN={cn_name}, OU=Development, O=MobileMorpher, L=Unknown, ST=Unknown, C=US"
         ]
         subprocess.run(cmd, check=True)
