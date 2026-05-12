@@ -15,9 +15,10 @@ services:
   web-ui:
     build: ./web-ui
     container_name: mobile-morpher-web
-    network_mode: "host"
+    ports:
+      - "9001:3000"
     environment:
-      - PORT=9001
+      - API_URL=http://100.85.172.4:9000
     depends_on:
       - api-service
     restart: unless-stopped

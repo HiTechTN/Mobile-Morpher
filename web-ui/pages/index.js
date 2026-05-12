@@ -34,7 +34,7 @@ export default function Home() {
   const [isDragging, setIsDragging] = useState(false)
   const fileInputRef = useRef(null)
 
-  const apiBase = typeof window !== 'undefined' ? `${window.location.protocol}//${window.location.hostname}:9000` : 'http://localhost:9000'
+  const apiBase = process.env.API_URL || (typeof window !== 'undefined' ? `${window.location.protocol}//${window.location.hostname}:9000` : 'http://localhost:9000')
 
   const handleDragOver = (e) => {
     e.preventDefault()
