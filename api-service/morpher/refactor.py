@@ -42,11 +42,20 @@ class AppRefactor:
             
         content = manifest_path.read_text(encoding='utf-8')
         
+        # Replace package name
         content = content.replace(self.old_package, self.new_package)
         
+        # Update authorities
         content = re.sub(
             r'android:authorities="[^"]*' + re.escape(self.old_package),
             lambda m: m.group(0).replace(self.old_package, self.new_package),
+            content
+        )
+        
+        # Increment versionCode to allow installation (must be higher than original)
+        content = re.sub(
+            r'android:versionCode="(\d+)"',
+            lambda m: f'android:versionCode="{int(m.group(1)) + 1}"',
             content
         )
         
