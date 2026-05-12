@@ -10,19 +10,14 @@ services:
     environment:
       - PYTHONUNBUFFERED=1
       - WORK_DIR=/app/shared-volume
-    dns:
-      - 8.8.8.8
-      - 8.8.4.4
     restart: unless-stopped
 
   web-ui:
     build: ./web-ui
     container_name: mobile-morpher-web
-    ports:
-      - "9001:3000"
+    network_mode: "host"
+    environment:
+      - PORT=9001
     depends_on:
       - api-service
-    dns:
-      - 8.8.8.8
-      - 8.8.4.4
     restart: unless-stopped
