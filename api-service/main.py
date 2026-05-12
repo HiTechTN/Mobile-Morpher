@@ -80,6 +80,9 @@ async def process_apk(session_id: str, config: RefactorConfig):
         }
         
     except Exception as e:
+        error_msg = str(e)
+        if "returned non-zero exit status" in error_msg:
+            raise HTTPException(status_code=400, detail="APK invalide ou corrompu. Veuillez uploader un fichier APK valide (non modifié ou complet).")
         import traceback
         error_detail = f"{str(e)}\n{traceback.format_exc()}"
         raise HTTPException(status_code=500, detail=error_detail)
