@@ -8,6 +8,9 @@ on:
       - 'android-app/**'
   workflow_dispatch:
 
+permissions:
+  contents: write
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -50,7 +53,7 @@ jobs:
         uses: softprops/action-gh-release@v1
         with:
           tag_name: android-v1.0.1
-          release_name: Mobile-Morpher Android App v1.0.1
-          files: android-app/app/build/outputs/apk/debug/app-debug.apk
+          name: Mobile-Morpher Android App v1.0.1
+          files: android-app/build/outputs/apk/debug/MobileMorpher-debug.apk
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
