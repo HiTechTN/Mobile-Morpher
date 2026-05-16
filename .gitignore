@@ -18,6 +18,12 @@ shared-volume/
 *.apk.*
 keystore.jks
 
+# Gradle
+.gradle/
+android-app/build/
+local.properties
+*.iml
+
 # IDE
 .vscode/
 .idea/

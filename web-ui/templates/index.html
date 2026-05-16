@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mobile-Morpher</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #0f172a 100%);
+            min-height: 100vh;
+            color: #f8fafc;
+            padding: 2rem;
+        }
+        .container { max-width: 600px; margin: 0 auto; }
+        h1 {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(90deg, #6366f1, #ec4899);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .subtitle { text-align: center; color: #94a3b8; margin-bottom: 2rem; }
+        .card {
+            background: rgba(30, 41, 59, 0.8);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 1rem;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        label { display: block; margin-bottom: 0.5rem; font-weight: 500; }
+        input, select {
+            width: 100%;
+            padding: 0.75rem;
+            border-radius: 0.5rem;
+            border: 1px solid #475569;
+            background: #1e293b;
+            color: white;
+            margin-bottom: 1rem;
+        }
+        .modes { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.5rem; margin-bottom: 1rem; }
+        .mode-btn {
+            padding: 0.75rem;
+            border-radius: 0.5rem;
+            border: 2px solid #475569;
+            background: transparent;
+            color: #94a3b8;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .mode-btn.active { border-color: #6366f1; background: rgba(99,102,241,0.2); color: white; }
+        .btn {
+            width: 100%;
+            padding: 1rem;
+            border-radius: 0.75rem;
+            border: none;
+            background: linear-gradient(90deg, #6366f1, #4f46e5);
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+        .btn:disabled { background: #475569; cursor: not-allowed; }
+        .result { background: rgba(34,197,94,0.2); border-color: #22c55e; }
+        .error { background: rgba(239,68,68,0.2); border-color: #ef4444; }
+        .progress { height: 8px; background: #1e293b; border-radius: 4px; overflow: hidden; margin: 1rem 0; }
+        .progress-bar { height: 100%; background: linear-gradient(90deg, #6366f1, #ec4899); transition: width 0.3s; }
+        #status { text-align: center; margin-top: 1rem; }
+        @media (max-width: 640px) { .modes { grid-template-columns: 1fr; } }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Mobile-Morpher</h1>
+        <p class="subtitle">Transformez vos APK Android</p>
+
+        <div class="card">
+            <label>Mode de transformation</label>
+            <div class="modes">
+                <button class="mode-btn active" onclick="setMode('express')">Express</button>
+                <button class="mode-btn" onclick="setMode('design')">Design</button>
+                <button class="mode-btn" onclick="setMode('developer')">Dev</button>
+            </div>
+
+            <label>Fichier APK</label>
+            <input type="file" id="file" accept=".apk">
+
+            <label>Nom de l'application</label>
+            <input type="text" id="appName" placeholder="Mon Application">
+
+            <label>Package ID</label>
+            <input type="text" id="packageId" placeholder="com.monapp.pro">
+
+            <div class="progress" id="progress" style="display:none">
+                <div class="progress-bar" id="progressBar"></div>
+            </div>
+
+            <button class="btn" id="submitBtn" onclick="process()">Transformer l'APK</button>
+
+            <div id="status"></div>
+        </div>
+    </div>
+
+    <script>
+        let mode = 'express';
+
+        function setMode(m) {
+            mode = m;
+            document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
+            event.target.classList.add('active');
+        }
+
+        async function process() {
+            const file = document.getElementById('file').files[0];
+            const appName = document.getElementById('appName').value;
+            const packageId = document.getElementById('packageId').value;
+            const btn = document.getElementById('submitBtn');
+            const status = document.getElementById('status');
+            const progress = document.getElementById('progress');
+            const progressBar = document.getElementById('progressBar');
+
+            if (!file || !appName || !packageId) {
+                status.innerHTML = '<p class="error" style="padding:1rem;border-radius:0.5rem;margin-top:1rem">Veuillez remplir tous les champs</p>';
+                return;
+            }
+
+            btn.disabled = true;
+            btn.textContent = 'Traitement en cours...';
+            progress.style.display = 'block';
+            progressBar.style.width = '20%';
+
+            try {
+                const formData = new FormData();
+                formData.append('file', file);
+                const uploadRes = await fetch('/api/upload', { method: 'POST', body: formData });
+                const uploadData = await uploadRes.json();
+                progressBar.style.width = '40%';
+
+                const processRes = await fetch('/api/process/' + uploadData.session_id, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        new_app_name: appName,
+                        new_package_id: packageId,
+                        mode: mode
+                    })
+                });
+                await processRes.json();
+                progressBar.style.width = '80%';
+
+                progressBar.style.width = '100%';
+
+                status.innerHTML = '<div class="result" style="padding:1rem;border-radius:0.5rem;margin-top:1rem;text-align:center"><p style="margin-bottom:0.5rem">Transformation r\u00e9ussie!</p><a href="/api/download/' + uploadData.session_id + '" style="color:#6366f1">T\u00e9l\u00e9charger l\'APK</a></div>';
+
+            } catch (e) {
+                status.innerHTML = '<p class="error" style="padding:1rem;border-radius:0.5rem;margin-top:1rem">Erreur: ' + e.message + '</p>';
+            }
+
+            btn.disabled = false;
+            btn.textContent = "Transformer l'APK";
+        }
+    </script>
+</body>
+</html>
